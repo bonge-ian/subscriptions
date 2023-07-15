@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Post;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use App\Jobs\ProcessNewPostCreatedNotifications;
 
 class NotifySubscribedUsers extends Command
@@ -29,6 +30,7 @@ class NotifySubscribedUsers extends Command
     {
         Post::query()->with('site.subscribers')
             ->doesntHave('sentMails')
+            ->where('id', '>', Cache::get('last_inserted_post', 0))
             ->eachById(
                 function (Post $post) {
                     return ProcessNewPostCreatedNotifications::dispatchIf(
