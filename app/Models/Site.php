@@ -16,6 +16,10 @@ class Site extends Model
         'url',
     ];
 
+    //    protected $withCount = [
+    //        'subscribers'
+    //    ];
+
     public function posts(): HasMany
     {
         return $this->hasMany(related: Post::class, foreignKey: 'site_id');
@@ -28,6 +32,6 @@ class Site extends Model
             table: 'subscriptions',
             foreignPivotKey: 'site_id',
             relatedPivotKey: 'user_id'
-        )->withPivot(columns: 'cancelled_at');
+        )->withPivot(columns: 'cancelled_at')->withTimestamps();
     }
 }

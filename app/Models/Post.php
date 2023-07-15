@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\PostCreated;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -16,6 +17,14 @@ class Post extends Model
         'title',
         'slug',
         'body',
+    ];
+
+    protected $with = [
+        'site'
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => PostCreated::class,
     ];
 
     protected static function booting(): void
