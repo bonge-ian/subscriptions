@@ -20,10 +20,5 @@ use Illuminate\Notifications\Events\NotificationSent;
 */
 
 Route::get('/', function () {
-    $a = Mail::to('eeed@dsfsdf.com')->send(new NewPostCreatedMail(User::first(), Post::first()));
-
-    Event::listen(function (NotificationSent $event) {
-        dd($event);
-    });
-    dd($a);
+   
 });
