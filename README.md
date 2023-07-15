@@ -42,5 +42,13 @@ Run
 
 ```php artisan optimize```
 
-Serve your app.
-```php artisan serve```
+
+To run a command to notify users of a new post, run
+```php artisan notify-subscribed-users```
+
+The above will push the jobs to the background.
+
+You could either 
+1. Run ```php artisan queue:work --queue=notification-emails```
+Or run task scheduler which will execute this every hour (preferred)
+2. Run ```php artisan schedule:work```
