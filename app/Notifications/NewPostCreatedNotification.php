@@ -31,7 +31,6 @@ class NewPostCreatedNotification extends Notification implements ShouldBeUnique,
     {
         return (new NewPostCreatedMail($this->user, $this->post))
             ->to($notifiable->email);
-
     }
 
     /**

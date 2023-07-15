@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\Post;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
 use App\Jobs\ProcessNewPostCreatedNotifications;
 
 class NotifySubscribedUsers extends Command
@@ -28,22 +27,19 @@ class NotifySubscribedUsers extends Command
      */
     public function handle()
     {
-        Cache::remember(
-            'last_run',
-            now()->addHours(2),
-            fn () => $this->sendEmails(),
-        );
-    }
-
-    public function sendEmails(): void
-    {
         Post::query()->with('site.subscribers')
-            ->whereDate('created_at', '>', Cache::get('last_run', now()))
+            ->doesntHave('sentMails')
             ->eachById(
                 function (Post $post) {
-                    return ProcessNewPostCreatedNotifications::dispatch($post)->onQueue('notification-emails');
+                    return ProcessNewPostCreatedNotifications::dispatchIf(
+                        $post->site->subscribers->isNotEmpty(),
+                        $post
+                    )
+                        ->onQueue('notification-emails');
                 }
             );
 
+        return 0;
     }
+
 }

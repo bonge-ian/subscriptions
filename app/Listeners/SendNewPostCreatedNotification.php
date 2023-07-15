@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\PostCreated;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Jobs\ProcessNewPostCreatedNotifications;
 
 class SendNewPostCreatedNotification implements ShouldQueue
 {
@@ -29,6 +30,7 @@ class SendNewPostCreatedNotification implements ShouldQueue
      */
     public function handle(PostCreated $event): void
     {
-        $event->post->site->subscribers->each->sendNewPostCreatedNotification(post: $event->post);
+        ProcessNewPostCreatedNotifications::dispatch($event->post)
+            ->onQueue('notification-emails');
     }
 }

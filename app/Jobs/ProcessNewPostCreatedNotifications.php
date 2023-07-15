@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\Post;
+use App\Models\User;
+use App\Models\SentEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -17,6 +19,7 @@ class ProcessNewPostCreatedNotifications implements ShouldQueue, ShouldBeUnique
     use Queueable;
     use SerializesModels;
 
+    public $tries = 3;
 
     public $backoff = 3;
 
@@ -33,8 +36,18 @@ class ProcessNewPostCreatedNotifications implements ShouldQueue, ShouldBeUnique
      */
     public function handle(): void
     {
-        dd($this->post);
-        $this->post->site->subscribers->each?->sendNewPostCreatedNotification(post: $this->post);
+        $this->post->site->subscribers->each(function (User $subscriber) {
+            if (!$this->emailAlreadySent($subscriber->id)) {
+                $subscriber->sendNewPostCreatedNotification(post: $this->post);
+            }
+        });
+    }
+
+    protected function emailAlreadySent(int $user_id): bool
+    {
+        return SentEmail::query()->where('post_id', '=', $this->post->id)
+            ->where('user_id', '=', $user_id)
+            ->exists();
     }
 
     public function uniqueId(): string

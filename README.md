@@ -52,3 +52,4 @@ You could either
 1. Run ```php artisan queue:work --queue=notification-emails```
 Or run task scheduler which will execute this every hour (preferred)
 2. Run ```php artisan schedule:work```
+3. [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/11629432-3677e35b-82e7-43a2-a939-3eef1a0659a8?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D11629432-3677e35b-82e7-43a2-a939-3eef1a0659a8%26entityType%3Dcollection%26workspaceId%3Dab556a5a-25a5-4b2c-bfb7-17c5a0b22025)
