@@ -1,0 +1,16 @@
+{
+    "preset": "psr12",
+    "rules": {
+        "simplified_null_return": true,
+        "braces": false,
+        "new_with_braces": {
+            "anonymous_class": false,
+            "named_class": false
+        },
+        "concat_space": true,
+        "no_unused_imports": true,
+        "ordered_imports": {
+            "sort_algorithm": "length"
+        }
+    }
+}
