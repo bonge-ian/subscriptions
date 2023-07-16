@@ -51,6 +51,11 @@ class User extends Authenticatable
         'subscriptions'
     ];
 
+    public function activeSubscriptions(): BelongsToMany
+    {
+        return $this->subscriptions()->whereNull('cancelled_at');
+    }
+
     public function subscriptions(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -63,6 +68,17 @@ class User extends Authenticatable
 
     public function sendNewPostCreatedNotification(Post $post): void
     {
-        $this->notify(new NewPostCreatedNotification(user: $this, post: $post));
+        if ($this->cancelledSubscriptions()->where('site_id', '=', $post->site()->value('id'))->exists()) {
+            return;
+        }
+
+        $this->notify(
+            (new NewPostCreatedNotification(user: $this, post: $post))->onQueue('notification-emails')
+        );
+    }
+
+    public function cancelledSubscriptions(): BelongsToMany
+    {
+        return $this->subscriptions()->whereNotNull('cancelled_at');
     }
 }

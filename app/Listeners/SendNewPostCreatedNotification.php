@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\PostCreated;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Jobs\ProcessNewPostCreatedNotifications;
@@ -33,8 +32,6 @@ class SendNewPostCreatedNotification implements ShouldQueue
     {
         ProcessNewPostCreatedNotifications::dispatch($event->post)
             ->onQueue('notification-emails');
-
-        Cache::put('last_inserted_post', $event->post->id);
 
     }
 }

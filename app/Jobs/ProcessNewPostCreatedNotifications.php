@@ -36,7 +36,7 @@ class ProcessNewPostCreatedNotifications implements ShouldQueue, ShouldBeUnique
      */
     public function handle(): void
     {
-        $this->post->site->subscribers->each(function (User $subscriber) {
+        $this->post->site->activeSubscribers->each(function (User $subscriber) {
             if (!$this->emailAlreadySent($subscriber->id)) {
                 $subscriber->sendNewPostCreatedNotification(post: $this->post);
             }

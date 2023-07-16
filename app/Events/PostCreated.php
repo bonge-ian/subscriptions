@@ -21,7 +21,7 @@ class PostCreated
      */
     public function __construct(public Post $post)
     {
-        $this->post->loadMissing('site.subscribers');
+        $this->post->loadMissing('site.activeSubscribers');
     }
 
     /**

@@ -28,9 +28,10 @@ class NotifySubscribedUsers extends Command
      */
     public function handle()
     {
-        Post::query()->with('site.subscribers')
+        Post::query()
+            ->with('site.activeSubscribers')
             ->doesntHave('sentMails')
-            ->where('id', '>', Cache::get('last_inserted_post', 0))
+            ->when(Cache::has('last_run'), fn ($query) => $query->where('created_at', '>', Cache::get('last_run')))
             ->eachById(
                 function (Post $post) {
                     return ProcessNewPostCreatedNotifications::dispatchIf(
@@ -40,6 +41,8 @@ class NotifySubscribedUsers extends Command
                         ->onQueue('notification-emails');
                 }
             );
+
+        Cache::put('last_run', now());
 
         return 0;
     }

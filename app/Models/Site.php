@@ -25,6 +25,11 @@ class Site extends Model
         return $this->hasMany(related: Post::class, foreignKey: 'site_id');
     }
 
+    public function canceledSubscribers(): BelongsToMany
+    {
+        return $this->subscribers()->whereNotNull('cancelled_at');
+    }
+
     public function subscribers(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -32,6 +37,12 @@ class Site extends Model
             table: 'subscriptions',
             foreignPivotKey: 'site_id',
             relatedPivotKey: 'user_id'
-        )->withPivot(columns: 'cancelled_at')->withTimestamps();
+        )
+            ->withPivot(columns: 'cancelled_at')->withTimestamps();
+    }
+
+    public function activeSubscribers(): BelongsToMany
+    {
+        return $this->subscribers()->whereNull('cancelled_at');
     }
 }
